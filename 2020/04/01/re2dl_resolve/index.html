@@ -9,6 +9,9 @@
   <title>Ret2dl_resolve | 白里个白</title>
   <meta name="author" content="SofrWhite">
   
+  <meta name="description" content="前言ret2dl_resolve是linux下一种利用linux系统延时绑定(Lazy Binding)机制的一种漏洞利用方法，其主要思想是利用_dl_runtime_resolve()函数写GOT表的操作，改写写入GOT的内容，使其成为getshell的函数值
+关键字： CTF pwn ret2dl_resolve ret2_dl_runtime_resolve 延时绑定 栈溢出 ROP">
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -118,7 +121,11 @@ var _hmt = _hmt || [];
 	<div class="mypage">		
 	  		
 
-	  	  
+	  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>ret2dl_resolve是linux下一种利用linux系统延时绑定(Lazy Binding)机制的一种漏洞利用方法，其主要思想是利用_dl_runtime_resolve()函数写GOT表的操作，改写写入GOT的内容，使其成为getshell的函数值</p>
+<p>关键字： <code>CTF</code> <code>pwn</code> <code>ret2dl_resolve</code> <code>ret2_dl_runtime_resolve</code> <code>延时绑定</code> <code>栈溢出</code> <code>ROP</code></p>
+<a id="more"></a>
+
+	  
 	</div>
 
 	<div>
@@ -173,7 +180,7 @@ var _hmt = _hmt || [];
     <ul id="categorys" class="tag_box list-unstyled collapse in">
           
   <li>
-    <li><a href="/categories/pwn/">pwn<span>2</span></a></li>
+    <li><a href="/categories/pwn/">pwn<span>3</span></a></li>
   </li>
 
     </ul>
@@ -186,7 +193,7 @@ var _hmt = _hmt || [];
 	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
     <ul id="tags" class="tag_box list-unstyled collapse in">	  
 	    
-  <li><a href="/tags/libc/">libc<span>2</span></a></li> <li><a href="/tags/ret2dl-resolve/">ret2dl_resolve<span>1</span></a></li>
+  <li><a href="/tags/libc/">libc<span>3</span></a></li> <li><a href="/tags/ret2dl-resolve/">ret2dl_resolve<span>1</span></a></li>
     </ul>
 	</div>
 		
@@ -197,7 +204,7 @@ var _hmt = _hmt || [];
 	   <a data-toggle="collapse" data-target="#toc"><i class="fa fa-bars"></i></a>
 	   <div id="toc" class="toc collapse in">
 		   <span class="toc-title">Contents</span>
-			
+			<ol class="toc-article"><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#前言"><span class="toc-article-text">前言</span></a></li></ol>
 		</div>
 	
 	</div>
