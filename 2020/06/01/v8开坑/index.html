@@ -126,9 +126,13 @@ var _hmt = _hmt || [];
 <a id="more"></a>
 
 <h2 id="V8的搭建"><a href="#V8的搭建" class="headerlink" title="V8的搭建"></a>V8的搭建</h2><p>v8的搭建主要的考验就是对于某种大家都懂的因素进行抗争，解决了这个问题后，其余都不是大问题。</p>
-<p>安装时主要参考了：<a href="https://mem2019.github.io/jekyll/update/2019/07/18/V8-Env-Config.html" target="_blank" rel="noopener">https://mem2019.github.io/jekyll/update/2019/07/18/V8-Env-Config.html</a></p>
+<p>安装时主要参考了：<a href="https://bbs.pediy.com/thread-258431.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-258431.htm</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://chromium.googlesource.com/chromium/tools/depot_tools.git</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'export PATH=$PATH:"/path/to/depot_tools"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="comment"># /path/to/depot_tools改成depot_tools的目录</span></span><br><span class="line"></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/ninja-build/ninja.git</span><br><span class="line"><span class="built_in">cd</span> ninja &amp;&amp; ./configure.py --bootstrap &amp;&amp; <span class="built_in">cd</span> ..</span><br><span class="line"><span class="comment"># clone并且configure</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'export PATH=$PATH:"/path/to/ninja"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="comment"># /path/to/ninja改成ninja的目录</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fetch v8</span><br><span class="line">gclient sync</span><br><span class="line"></span><br><span class="line">tools/dev/v8gen.py x64.debug</span><br><span class="line">ninja -C out.gn/x64.debug d8</span><br></pre></td></tr></table></figure>
+
+
+
 <p>我的本地是ubuntu 18.04 server版，在安装时按照官方流程走，只遇到了一个问题：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">subprocess.CalledProcessError: Command &#39;[&#39;&#x2F;usr&#x2F;bin&#x2F;python&#39;, &#39;-u&#39;, &#39;tools&#x2F;mb&#x2F;mb.py&#39;, &#39;gen&#39;, &#39;-f&#39;, &#39;infra&#x2F;mb&#x2F;mb_config.pyl&#39;, &#39;-m&#39;, &#39;developer_default&#39;, &#39;-b&#39;, &#39;x64.debug&#39;, &#39;out.gn&#x2F;x64.debug&#39;]&#39; returned non-zero exit status 1</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">subprocess.CalledProcessError: Command <span class="string">'['</span>/usr/bin/python<span class="string">', '</span>-u<span class="string">', '</span>tools/mb/mb.py<span class="string">', '</span>gen<span class="string">', '</span>-f<span class="string">', '</span>infra/mb/mb_config.pyl<span class="string">', '</span>-m<span class="string">', '</span>developer_default<span class="string">', '</span>-b<span class="string">', '</span>x64.debug<span class="string">', '</span>out.gn/x64.debug<span class="string">']'</span> returned non-zero <span class="built_in">exit</span> status 1</span><br></pre></td></tr></table></figure>
 
 <p>这个时候<code>sudo apt install pkg-config</code>就可以解决了。除此之外没有什么需要注意的。</p>
 <p>还有一个问题，就是在debug的版本中，貌似会有一些check，我在debug版本下运行oob题目中的d8会出现以下信息：</p>
@@ -231,7 +235,7 @@ var _hmt = _hmt || [];
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/05/11/de1-wp/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/06/01/数字经济/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -271,7 +275,7 @@ var _hmt = _hmt || [];
     <ul id="categorys" class="tag_box list-unstyled collapse in">
           
   <li>
-    <li><a href="/categories/pwn/">pwn<span>6</span></a></li>
+    <li><a href="/categories/pwn/">pwn<span>7</span></a></li>
   </li>
 
     </ul>
@@ -284,7 +288,7 @@ var _hmt = _hmt || [];
 	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
     <ul id="tags" class="tag_box list-unstyled collapse in">	  
 	    
-  <li><a href="/tags/browser/">browser<span>1</span></a></li> <li><a href="/tags/v8/">v8<span>1</span></a></li>
+  <li><a href="/tags/browser/">browser<span>2</span></a></li> <li><a href="/tags/v8/">v8<span>2</span></a></li>
     </ul>
 	</div>
 		
